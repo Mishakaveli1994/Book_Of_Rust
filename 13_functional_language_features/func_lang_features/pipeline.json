@@ -1,0 +1,90 @@
+{
+  "name": "vivaticket_processing_top_level",
+  "properties": {
+      "activities": [
+          {
+              "name": "iterate_over_tables",
+              "description": "Iterates through each table defined in the pipeline parameters array, processing them sequentially.",
+              "type": "ForEach",
+              "dependsOn": [],
+              "userProperties": [],
+              "typeProperties": {
+                  "items": {
+                      "value": "@pipeline().parameters.table_array",
+                      "type": "Expression"
+                  },
+                  "isSequential": true,
+                  "activities": [
+                      {
+                          "name": "Execute Pipeline1",
+                          "type": "ExecutePipeline",
+                          "dependsOn": [],
+                          "policy": {
+                              "secureInput": false
+                          },
+                          "userProperties": [],
+                          "typeProperties": {
+                              "pipeline": {
+                                  "referenceName": "vivaticket_processing_processing",
+                                  "type": "PipelineReference"
+                              },
+                              "waitOnCompletion": true
+                          }
+                      }
+                  ]
+              }
+          }
+      ],
+      "parameters": {
+          "table_array": {
+              "type": "array",
+              "defaultValue": [
+                  {
+                      "table_name": "DATA_Sale",
+                      "schema": "dbo",
+                      "identity_column": "SaleId"
+                  },
+                  {
+                      "table_name": "DATA_SaleItem",
+                      "schema": "dbo",
+                      "identity_column": "SaleItemId"
+                  },
+                  {
+                      "table_name": "CNF_PaymentMethod",
+                      "schema": "dbo",
+                      "identity_column": "PaymentMethodId"
+                  }
+              ]
+          }
+      },
+      "variables": {
+          "latest_processed_identity": {
+              "type": "String"
+          },
+          "latest_sql_identity": {
+              "type": "String"
+          },
+          "vivaticket_metadata_json": {
+              "type": "String"
+          },
+          "log_message": {
+              "type": "String"
+          },
+          "updated_metadata_json": {
+              "type": "String"
+          },
+          "missing_identities": {
+              "type": "String"
+          },
+          "log_missing_message": {
+              "type": "String"
+          }
+      },
+      "folder": {
+          "name": "Vivaticket"
+      },
+      "annotations": [],
+      "lastPublishTime": "2025-03-17T14:41:19Z"
+  },
+  "type": "Microsoft.DataFactory/factories/pipelines"
+}
